@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import ItemList from '../item-list';
+import ItemList from '../view/item-list';
 import Upload from '../upload'
 import FileList from '../file-list';
 import { uniqueId } from "lodash";
 import filesize from "filesize";
-import '../../App.css';
 
 export default class CreateItem extends Component {
   state = {
@@ -80,7 +79,7 @@ export default class CreateItem extends Component {
       img: '',
     })
 
-    window.location = '/item'
+    window.location = 'admin/item'
   }
 
   async componentDidMount() {

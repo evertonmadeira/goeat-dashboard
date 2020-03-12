@@ -9,10 +9,14 @@ router.route('/').get((req, res) => {
 });
 
 router.route('/add').post((req, res) => {
-  const status = req.body.status;
+  const num = Number(req.body.num);
+  const estado = req.body.estado;
+  const qrcode = req.body.qrcode;
 
   const newTable = new Table({
-    status,
+    num,
+    estado,
+    qrcode
   });
 
   newTable.save()
@@ -35,10 +39,12 @@ router.route('/delete/:id').delete((req, res) => {
 router.route('/update/:id').post((req, res) => {
   Table.findById(req.params.id)
     .then(table => {
-      table.status = req.body.status;
+      table.num = req.body.num;
+      table.estado = req.body.estado;
+      table.qrcode = req.body.qrcode;
       
       table.save()
-        .then(() => res.json('Status alterado!'))
+        .then(() => res.json('Dados alterados!'))
         .catch((err) => res.status(400).json('Erro:' + err));
     })
     .catch((err) => res.status(400).json('Erro:' + err));

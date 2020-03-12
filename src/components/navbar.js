@@ -13,16 +13,13 @@ export default class Navbar extends Component {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item active">
-              <a className="nav-link" href="/admin/user">Usuários<span className="sr-only">(current)</span></a>
+              <a className="nav-link" href="/admin/user">Usuários<span className="sr-only"></span></a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/admin/item">Produtos</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/admin/mesas">Mesas</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link disabled" href="#" tabIndex="-1" aria-disabled="true">Disabled</a>
+              <a className="nav-link" href="/admin/table">Mesas</a>
             </li>
           </ul>
         </div>

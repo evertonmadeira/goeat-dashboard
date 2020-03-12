@@ -4,10 +4,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "./components/navbar"
 import EditUser from "./components/edit/edit-user";
 import EditItem from "./components/edit/edit-item";
-import Table from "./components/table";
-import CreateUser from "./components/add/create-user";
-import CreateItem from "./components/add/create-item";
-import UserList from "./components/user-list";
+import EditTable from "./components/edit/edit-table";
+import CreateUser from "./components/add/add-user";
+import CreateItem from "./components/add/add-item";
+import CreateTable from "./components/add/add-table";
+import UserList from "./components/view/user-list";
 
 function App() {
   return (
@@ -20,10 +21,10 @@ function App() {
               <Route path="/" exact component={UserList} />
               <Route path="/admin/user" component={CreateUser} />
               <Route path="/admin/item" component={CreateItem} />
+              <Route path="/admin/table" component={CreateTable} />
               <Route path="/edit-user/:id" component={EditUser} />
               <Route path="/edit-item/:id" component={EditItem} />
-              <Route path="/admin/table" component={Table} />
-
+              <Route path="/edit-table/:id" component={EditTable} />              
             </Switch >
           </div>
         </React.Fragment >

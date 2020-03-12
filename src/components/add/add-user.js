@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import UserList from '../user-list';
+import UserList from '../view/user-list';
 
 export default class CreateUser extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ export default class CreateUser extends Component {
     this.state = {
       nome: '',
       sobrenome: '',
-      cpf: 0,
+      cpf: '',
       email: '',
       senha: '',
     }
@@ -72,7 +72,7 @@ export default class CreateUser extends Component {
       senha: ''
     })
 
-    window.location = '/user'
+    window.location = 'admin/user'
   }
 
   render() {
