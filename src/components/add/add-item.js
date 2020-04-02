@@ -1,107 +1,53 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import ItemList from '../view/item-list';
 import Upload from '../upload'
 import FileList from '../file-list';
 import { uniqueId } from "lodash";
 import filesize from "filesize";
 
-export default class CreateItem extends Component {
-  state = {
-    uploadedFiles: [],
-  }
-  constructor(props) {
-    super(props);
+export default function AddItem(props) {
 
-    this.onChangeNome = this.onChangeNome.bind(this);
-    this.onChangeDescricao = this.onChangeDescricao.bind(this);
-    this.onChangeCategoria = this.onChangeCategoria.bind(this);
-    this.onChangePreco = this.onChangePreco.bind(this);
-    this.onChangeImg = this.onChangeImg.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+  const [nome, setNome] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [categoria, setCategoria] = useState('');
+  const [preco, setPreco] = useState('');
+  const [img, setImg] = useState('');
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
-    this.state = {
-      nome: '',
-      descricao: '',
-      categoria: '',
-      preco: 0,
-      img: '',
-    }
-  }
+  const history = useHistory();
 
-  onChangeNome(e) {
-    this.setState({
-      nome: e.target.value
-    })
-  }
-  onChangeDescricao(e) {
-    this.setState({
-      descricao: e.target.value
-    })
-  }
-  onChangeCategoria(e) {
-    this.setState({
-      categoria: e.target.value
-    })
-  }
-  onChangePreco(e) {
-    this.setState({
-      preco: e.target.value
-    })
-  }
-  onChangeImg(e) {
-    this.setState({
-      img: e.target.value
-    })
-  }
-
-  onSubmit(e) {
-    e.preventDefault();
-
-    const item = {
-      nome: this.state.nome,
-      descricao: this.state.descricao,
-      categoria: this.state.categoria,
-      preco: this.state.preco,
-      img: this.state.img,
-    }
-
-    console.log(item);
-
-    axios.post('http://localhost:5000/product/add', item)
-      .then(res => console.log(res.data));
-
-    this.setState({
-      nome: '',
-      descricao: '',
-      categoria: '',
-      preco: '',
-      img: '',
-    })
-
-    window.location = 'admin/item'
-  }
-
-  async componentDidMount() {
+  const getFile = async () => {
     const response = await axios.get("product");
 
-    this.setState({
-      uploadedFiles: response.data.map(file => ({
-        id: file._id,
-        name: file.name,
-        readableSize: filesize(file.size),
-        preview: file.url,
-        uploaded: true,
-        url: file.url
-      }))
-    });
+    setUploadedFiles(response.data.map(file => ({
+      id: file._id,
+      name: file.name,
+      readableSize: filesize(file.size),
+      preview: file.url,
+      uploaded: true,
+      url: file.url
+    })))
   }
 
-  handleUpload = files => {
+  useEffect(() => {
+    getFile();
+
+    return function Unmount() {
+      uploadedFiles.forEach(file => URL.revokeObjectURL(file.preview));
+    }
+
+  }, [uploadedFiles]);
+
+  useEffect(() => {
+    if (props.item) console.log(props.item)
+  }, [props.item])
+
+  function handleUpload(files) {
     const uploadedFiles = files.map(file => ({
       file,
       id: uniqueId(),
-      name: file.name,
+      name: file.nome,
       readableSize: filesize(file.size),
       preview: URL.createObjectURL(file),
       progress: 0,
@@ -110,123 +56,147 @@ export default class CreateItem extends Component {
       url: null
     }));
 
-    this.setState({
-      uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles)
-    });
+    setUploadedFiles(uploadedFiles);
 
-    uploadedFiles.forEach(this.processUpload);
-  };
-
-  updateFile = (id, data) => {
-    this.setState({
-      uploadedFiles: this.state.uploadedFiles.map(uploadedFile => {
-        return id === uploadedFile.id
-          ? { ...uploadedFile, ...data }
-          : uploadedFile;
-      })
-    });
-  };
-
-  processUpload = uploadedFile => {
-    const data = new FormData();
-
-    data.append("file", uploadedFile.file, uploadedFile.name);
-
-    axios
-      .post("product", data, {
-        onUploadProgress: e => {
-          const progress = parseInt(Math.round((e.loaded * 100) / e.total));
-
-          this.updateFile(uploadedFile.id, {
-            progress
-          });
-        }
-      })
-      .then(response => {
-        this.updateFile(uploadedFile.id, {
-          uploaded: true,
-          id: response.data._id,
-          url: response.data.url
-        });
-      })
-      .catch(() => {
-        this.updateFile(uploadedFile.id, {
-          error: true
-        });
-      });
-  };
-
-  handleDelete = async id => {
-    await axios.delete(`product/${id}`);
-
-    this.setState({
-      uploadedFiles: this.state.uploadedFiles.filter(file => file.id !== id)
-    });
-  };
-
-  componentWillUnmount() {
-    this.state.uploadedFiles.forEach(file => URL.revokeObjectURL(file.preview));
   }
 
-  render() {
-    return (
-      <div>
-        <h3>Adicionar Produto</h3>
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label>Nome: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.nome}
-              onChange={this.onChangeNome}
-            />
-          </div>
-          <div className="form-group">
-            <label>Descrição: </label>
-            <textarea type="text"
-              required
-              className="form-control rows=3"
-              value={this.state.descricao}
-              onChange={this.onChangeDescricao}
-            />
-          </div>
+  function updateFile(id, data) {
 
-          <div className="form-group">
-            <label>Categoria: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.categoria}
-              onChange={this.onChangeCategoria}
-            />
+    setUploadedFiles(uploadedFiles.map(uploadedFile => {
+      return id === uploadedFile.id
+        ? { ...uploadedFile, ...data }
+        : uploadedFile;
+    }))
+
+  };
+
+  function handleDelete(id) {
+    axios.delete(`http://localhost:5000/product/delete/${id}`);
+
+    setUploadedFiles(uploadedFiles.filter(file => file.id !== id));
+  };
+
+  async function onSubmit(e) {
+    e.preventDefault();
+
+    const formData = new FormData()
+
+    formData.append('nome', nome);
+    formData.append('descricao', descricao);
+    formData.append('categoria', categoria);
+    formData.append('preco', preco);
+    formData.append('img', img);
+    formData.append("file", uploadedFiles[0].file, uploadedFiles[0].name);
+
+    // const item = {
+    //   nome: e.target.elements["nome"].value,
+    //   descricao: e.target.elements["descricao"].value,
+    //   categoria: e.target.elements["categoria"].value,
+    //   preco: e.target.elements["preco"].value,
+    //   img: e.target.elements["img"].value,
+    //   file: e.target.elements["file"].value[uploadedFiles[0].file],
+    // }
+
+    try {
+      if (props.formData.nome) {
+        await axios.post('http://localhost:5000/product/update/' + props.formData._id, formData)
+      } else {
+        axios
+          .post("http://localhost:5000/product/add", formData, {
+            onUploadProgress: e => {
+              const progress = parseInt(Math.round((e.loaded * 100) / e.total));
+
+              updateFile(uploadedFiles[0].id, {
+                progress
+              });
+            }
+          })
+      }
+    } catch (error) {
+      if (props.formData.nome) {
+        alert('Erro ao editar item.')
+      } else {
+        alert('Erro ao adicionar item.')
+      }
+    }
+
+    props.setSelectedItem({});
+    history.go('item');
+  }
+
+  return (
+    <div>
+      <div className="modal fade" id="addUserModal" tabIndex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="addUserModalLabel">{props.formData.nome ? "Editar Produto" : "Novo Produto"}</h5>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <form onSubmit={onSubmit}>
+                <div className="form-group">
+                  <label>Nome: </label>
+                  <input type="text"
+                    name="nome"
+                    required
+                    className="form-control"
+                    value={nome}
+                    onChange={e => setNome(e.target.value)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Descrição: </label>
+                  <textarea type="text"
+                    name="descricao"
+                    required
+                    className="form-control rows=3"
+                    value={descricao}
+                    onChange={e => setNome(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Categoria: </label>
+                  <input type="text"
+                    name="categoria"
+                    required
+                    className="form-control"
+                    value={categoria}
+                    onChange={e => setNome(e.target.value)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Preço: </label>
+                  <input type="text"
+                    name="preco"
+                    required
+                    className="form-control"
+                    value={preco}
+                    onChange={e => setNome(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Upload onUpload={handleUpload} />
+                  {(
+                    <FileList files={uploadedFiles} onDelete={handleDelete} />
+                  )}
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" className="btn btn-primary" data-dismiss="modal">{props.formData.nome ? "Editar" : "Adicionar"}</button>
+                </div>
+              </form>
+            </div>
+
           </div>
-          <div className="form-group">
-            <label>Preço: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.preco}
-              onChange={this.onChangePreco}
-            />
-          </div>
-          <div>
-          <Upload onUpload={this.handleUpload} />
-          {/* {!!uploadedFiles.length && (
-            <FileList files={uploadedFiles} onDelete={this.handleDelete} />
-          )} */}
-          </div>
-          <p />
-          <div className="form-group">
-            <input type="submit"
-              value="Adicionar"
-              className="btn btn-primary"
-            />
-          </div>
-        </form>
-        <ItemList />
+        </div>
       </div>
+    </div>
 
-    )
-  }
+
+
+  )
 }

@@ -1,32 +1,34 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { FaWhmcs } from 'react-icons/fa';
 
 export default class Navbar extends Component {
 
-  render() {
-    return (
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <a className="navbar-brand" href="/">Admin</a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav">
-            <li className="nav-item active">
-              <a className="nav-link" href="/admin/user">Usuários<span className="sr-only"></span></a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/admin/item">Produtos</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/admin/table">Mesas</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    );
-  }
+    render() {
+        return (
+            <nav className="navbar navbar-expand-lg navbar-light bg-light" style={{ marginBottom: 5 }}>
+                <Link className="navbar-brand" to="/"><FaWhmcs style={{marginRight: 5}}/>Admin</Link>
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarNav">
+                    <ul className="navbar-nav">
+                        <li className="nav-item active">
+                            <Link className="nav-link" to="/user">Usuários<span className="sr-only"></span></Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/item">Produtos</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/table">Mesas</Link>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        );
+    }
 }
+
 
     //  <div className="container">
 //           <nav className="col-md-2 d-none d-md-block bg-light sidebar">
@@ -47,3 +49,8 @@ export default class Navbar extends Component {
 //           </nav>
 //         </div>
 //         ); 
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+

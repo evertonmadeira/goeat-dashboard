@@ -1,71 +1,85 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import AddItem from '../../add/add-item';
+import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 
-const Item = props => (
-  <tr>
-    <td>{props.item.nome}</td>
-    <td>{props.item.categoria}</td>
-    <td>R${props.item.preco}</td>
-    <td>
-      <Link to={"/edit-item/" + props.item._id}>Editar</Link> | 
-        <a href="/edit-item/" onClick={() => { props.deleteItem(props.item._id) }}> Excluir</a>
-    </td>
-  </tr>
-)
+export default function ItemList(props) {
 
-export default class ItemList extends Component {
-  constructor(props) {
-    super(props);
+  const [item, setItem] = useState([]);
+  const [selectedItem, setSelectedItem] = useState({});
 
-    this.deleteItem = this.deleteItem.bind(this)
-
-    this.state = { item: [] };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     axios.get('http://localhost:5000/product/')
       .then(res => {
-        this.setState({ item: res.data })
+        setItem(res.data)
       })
       .catch((error) => {
         console.log(error);
       })
+  }, [])
+
+  function selectItem(table) {
+    setSelectedItem(table)
   }
 
-  deleteItem(id) {
-    axios.delete('http://localhost:5000/product/delete/' +id)
+  function deleteItem(id) {
+    axios.delete('http://localhost:5000/product/delete/' + id)
       .then(res => { console.log(res.data) });
 
-    this.setState({
-      item: this.state.item.filter(element => element._id !== id)
-    })
+    setItem(item.filter(element => element._id !== id))
+
   }
 
-  itemList() {
-    return this.state.item.map(currentitem => {
-      return <Item item={currentitem} deleteItem={this.deleteItem} key={currentitem._id} />;
-    })
-  }
-
-  render() {
+  function itemRow(item) {
     return (
-      <div>
-        <h3>Produtos</h3>
-        <table className="table">
-          <thead className="thead-light">
-            <tr>
-              <th>Nome</th>
-              <th>Categoria</th>
-              <th>Preço</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.itemList()}
-          </tbody>
-        </table>
-      </div>
+      <tr key={item._id}>
+        <td><img src={"https://mernbucket.s3.amazonaws.com/" + item.img.key} alt={item.img.nome} width='50px'></img></td>
+        <td>{item.nome}</td>
+        <td>{item.descricao}</td>
+        <td>{item.categoria}</td>
+        <td>R${item.preco}</td>
+        <td>
+          <div className="row">
+            <div>
+              <button className="btn btn-warning" type="button" data-toggle="modal" data-target="#addUserModal" onClick={() => setSelectedItem(item)} style={{ marginRight: 5 }}>
+                <FaEdit color="black" />
+              </button>
+            </div>
+            <button href="!#" className="btn btn-danger" onClick={() => { deleteItem(item._id) }}>
+              <FaTrashAlt />
+            </button>
+          </div>
+        </td>
+      </tr>
     )
   }
+
+  function itemList() {
+    return item.map(itemRow)
+  }
+
+  return (
+    <div>
+      <div className="container row">
+        <h3 style={{ marginRight: 5 }}>Produtos</h3>
+        <AddItem table={selectedItem} setSelectedTable={setSelectedItem} />
+      </div>
+
+      <table className="table">
+        <thead className="thead-light">
+          <tr>
+            <th>Imagem</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Categoria</th>
+            <th>Preço</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {itemList()}
+        </tbody>
+      </table>
+    </div>
+  )
 }

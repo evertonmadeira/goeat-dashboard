@@ -1,136 +1,125 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import UserList from '../view/user-list';
 
-export default class CreateUser extends Component {
-  constructor(props) {
-    super(props);
+export default function AddUser() {
+  const [nome, setNome] = useState('');
+  const [sobrenome, setSobrenome] = useState('');
+  const [cpf, setCpf] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
 
-    this.onChangeNome = this.onChangeNome.bind(this);
-    this.onChangeSobrenome = this.onChangeSobrenome.bind(this);
-    this.onChangeCpf = this.onChangeCpf.bind(this);
-    this.onChangeEmail = this.onChangeEmail.bind(this);
-    this.onChangeSenha = this.onChangeSenha.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+  const history = useHistory();
 
-    this.state = {
-      nome: '',
-      sobrenome: '',
-      cpf: '',
-      email: '',
-      senha: '',
-    }
-  }
-
-  onChangeNome(e) {
-    this.setState({
-      nome: e.target.value
-    })
-  }
-  onChangeSobrenome(e) {
-    this.setState({
-      sobrenome: e.target.value
-    })
-  }
-  onChangeCpf(e) {
-    this.setState({
-      cpf: e.target.value
-    })
-  }
-  onChangeEmail(e) {
-    this.setState({
-      email: e.target.value
-    })
-  }
-  onChangeSenha(e) {
-    this.setState({
-      senha: e.target.value
-    })
-  }
-
-  onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
 
     const user = {
-      nome: this.state.nome,
-      sobrenome: this.state.sobrenome,
-      cpf: this.state.cpf,
-      email: this.state.email,
-      senha: this.state.senha
+      nome,
+      sobrenome,
+      cpf,
+      email,
+      senha
     }
 
-    console.log(user);
+    try {
+      await axios.post('http://localhost:5000/user/register', user);
+    } catch (error) {
+      alert('Erro ao adicionar usuário');
+    }
 
-    axios.post('http://localhost:5000/user/add', user)
-      .then(res => console.log(res.data));
+    setNome();
+    setSobrenome();
+    setCpf();
+    setEmail();
+    setSenha();
 
-    this.setState({
-      nome: '',
-      sobrenome: '',
-      cpf: '',
-      email: '',
-      senha: ''
-    })
-
-    window.location = 'admin/user'
+    history.go('/user')
   }
 
-  render() {
-    return (
+  return (
+    <div>
       <div>
-        <h3>Criar novo usuário</h3>
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label>Nome: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.nome}
-              onChange={this.onChangeNome}
-            />
-          </div>
-          <div className="form-group">
-            <label>Sobrenome: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.sobrenome}
-              onChange={this.onChangeSobrenome}
-            />
-          </div>
-          <div className="form-group">
-            <label>CPF: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.cpf}
-              onChange={this.onChangeCpf}
-            />
-          </div>
-          <div className="form-group">
-            <label>E-mail: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.email}
-              onChange={this.onChangeEmail}
-            />
-          </div>
-          <div className="form-group">
-            <label>Senha: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.senha}
-              onChange={this.onChangeSenha}
-            />
-          </div>
-          <div className="form-group">
-            <input type="submit" value="Criar Usuário" className="btn btn-primary" />
-          </div>
-        </form>
-        <UserList />
+        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+          Add
+          </button>
       </div>
-    )
-  }
+
+      <div className="modal fade" id="addUserModal" tabIndex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="addUserModalLabel">Novo Usuário</h5>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <form onSubmit={onSubmit}>
+                <div className="form-group">
+                  <label>Nome: </label>
+                  <input type="text"
+                    name="nome"
+                    required
+                    className="form-control"
+                    value={nome}
+                    onChange={e => setNome(e.target.value)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Sobrenome: </label>
+                  <input type="text"
+                    name="sobrenome"
+                    required
+                    className="form-control"
+                    value={sobrenome}
+                    onChange={e => setSobrenome(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>CPF: </label>
+                  <input type="text"
+                    name="cpf"
+                    maxLength={11}
+                    required
+                    className="form-control"
+                    value={cpf}
+                    onChange={e => setCpf(e.target.value)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>E-mail: </label>
+                  <input type="email"
+                    name="email"
+                    placeholder="nome@exemplo.com"
+                    required
+                    className="form-control"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Senha: </label>
+                  <input type="password"
+                    name="senha"
+                    required
+                    className="form-control"
+                    value={senha}
+                    onChange={e => setSenha(e.target.value)}
+                  />
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" className="btn btn-primary" >Adicionar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
+
+

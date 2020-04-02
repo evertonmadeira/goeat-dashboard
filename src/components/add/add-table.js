@@ -1,100 +1,104 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import axios from 'axios';
-import TableList from '../view/table-list'
-// import { Container } from './styles';
+import { useHistory } from 'react-router-dom';
 
-export default class CreateTable extends Component {
-  constructor(props) {
-    super(props);
+export default function AddTable(props) {
 
-    this.onChangeNum = this.onChangeNum.bind(this);
-    this.onChangeEstado = this.onChangeEstado.bind(this);
-    this.onChangeQr = this.onChangeQr.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+  const [num, setNum] = useState('');
+  const [estado, setEstado] = useState('');
+  const [qrcode, setQrCode] = useState('');
 
-    this.state = {
-      num: '',
-      estado: '',
-      qrcode: '',
-    }
-  }
+  const history = useHistory();
 
-  onChangeNum(e) {
-    this.setState({
-      num: e.target.value
-    })
-  }
-  onChangeEstado(e) {
-    this.setState({
-      estado: e.target.value
-    })
-  }
-  onChangeQr(e) {
-    this.setState({
-      qrcode: e.target.value
-    })
-  }
+  useEffect(() => {
+    if (props.table) console.log(props.table)
+  }, [props.table])
 
-  onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
 
     const table = {
-      num: this.state.num,
-      estado: this.state.estado,
-      qrcode: this.state.qrcode,
+      num: e.target.elements['num'].value,
+      estado: e.target.elements['estado'].value,
+      qrcode: e.target.elements['qrcode'].value
     }
 
-    console.log(table);
+    try {
+      if (props.table.num) {
+        await axios.post('http://localhost:5000/table/update/' + props.table._id, table)
+      }
+      else {
+        await axios.post('http://localhost:5000/table/add', table)
 
-    axios.post('http://localhost:5000/table/add', table)
-      .then(res => console.log(res.data));
+      }
 
-    this.setState({
-      num: '',
-      estado: '',
-      qrcode: '',
-    })
+    } catch (error) {
 
-    window.location = 'admin/table'
+      if (props.table.num) {
+        alert('Erro ao editar mesa');
+      } else alert('Erro ao adicionar mesa')
+
+    }
+
+    props.setSelectedTable({});
+    history.go('/table');
   }
-  render() {
-    return (
+
+  return (
+    <div>
       <div>
-        <h3>Adicionar Mesa</h3>
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label>Número: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.num}
-              onChange={this.onChangeNum}
-            />
-          </div>
-          <div className="form-group">
-            <label>Estado: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.estado}
-              onChange={this.onChangeEstado}
-            />
-          </div>
-          <div className="form-group">
-            <label>QR Code: </label>
-            <input type="text"
-              required
-              className="form-control"
-              value={this.state.qrcode}
-              onChange={this.onChangeQr}
-            />
-          </div>
-          <div className="form-group">
-            <input type="submit" value="Adicionar" className="btn btn-primary" />
+        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+          Add
+          </button>
+      </div>
+      <div className="modal fade" id="addUserModal" tabIndex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <form onSubmit={onSubmit}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="addUserModalLabel">{props.table.num ? "Editar Mesa" : "Nova Mesa"}</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label>Nº: </label>
+                  <input type="text"
+                    name="num"
+                    defaultValue={props.table.num ? props.table.num : ""}
+                    className="form-control"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Status: </label>
+                  <select
+                    name="estado"
+                    className="custom-select"
+                  >
+                    <option value="">Selecione um estado</option>
+                    <option value="Livre" selected={props.table && props.table.estado === "Livre" ? true : false} >Livre</option>
+                    <option value="Ocupada" selected={props.table && props.table.estado === "Ocupada" ? true : false}>Ocupada</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>QR Code: </label>
+                  <input type="text"
+                    name="qrcode"
+                    defaultValue={props.table.qrcode ? props.table.qrcode : ""}
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => props.setSelectedTable({})}>Cancelar</button>
+                <button type="submit" className="btn btn-primary" >{props.table.num ? "Editar" : "Adicionar"}</button>
+              </div>
+            </div>
           </div>
         </form>
-        <TableList />
       </div>
-    )
-  }
+    </div>
+  )
 }
+
