@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-export default function AddUser() {
+export default function ModalUser() {
   const [nome, setNome] = useState('');
   const [sobrenome, setSobrenome] = useState('');
   const [cpf, setCpf] = useState('');
@@ -24,6 +24,7 @@ export default function AddUser() {
 
     try {
       await axios.post('http://localhost:5000/user/register', user);
+      history.go('/user')
     } catch (error) {
       alert('Erro ao adicionar usuário');
     }
@@ -34,7 +35,6 @@ export default function AddUser() {
     setEmail();
     setSenha();
 
-    history.go('/user')
   }
 
   return (

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import Upload from '../upload'
-import FileList from '../file-list';
+import Upload from '../Upload'
+import FileList from '../FileList';
 import { uniqueId } from "lodash";
 import filesize from "filesize";
 
-export default function AddItem(props) {
+export default function ModalItem(props) {
 
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
@@ -16,6 +16,10 @@ export default function AddItem(props) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const history = useHistory();
+
+  useEffect(() => {
+    if (props.item) console.log(props.item)
+  }, [props.item])
 
   const getFile = async () => {
     const response = await axios.get("product");
@@ -38,10 +42,6 @@ export default function AddItem(props) {
     }
 
   }, [uploadedFiles]);
-
-  useEffect(() => {
-    if (props.item) console.log(props.item)
-  }, [props.item])
 
   function handleUpload(files) {
     const uploadedFiles = files.map(file => ({
@@ -79,27 +79,27 @@ export default function AddItem(props) {
   async function onSubmit(e) {
     e.preventDefault();
 
+    const item = {
+      nome: e.target.elements["nome"].value,
+      descricao: e.target.elements["descricao"].value,
+      categoria: e.target.elements["categoria"].value,
+      preco: e.target.elements["preco"].value,
+      img: e.target.elements["img"].value,
+      file: e.target.elements["file"].value[uploadedFiles[0].file],
+    }
+
     const formData = new FormData()
 
-    formData.append('nome', nome);
-    formData.append('descricao', descricao);
-    formData.append('categoria', categoria);
-    formData.append('preco', preco);
-    formData.append('img', img);
-    formData.append("file", uploadedFiles[0].file, uploadedFiles[0].name);
-
-    // const item = {
-    //   nome: e.target.elements["nome"].value,
-    //   descricao: e.target.elements["descricao"].value,
-    //   categoria: e.target.elements["categoria"].value,
-    //   preco: e.target.elements["preco"].value,
-    //   img: e.target.elements["img"].value,
-    //   file: e.target.elements["file"].value[uploadedFiles[0].file],
-    // }
+    formData.append('nome', item.nome);
+    formData.append('descricao', item.descricao);
+    formData.append('categoria', item.categoria);
+    formData.append('preco', item.preco);
+    formData.append('img', item.img);
+    formData.append('file', item.file, uploadedFiles[0].name);
 
     try {
-      if (props.formData.nome) {
-        await axios.post('http://localhost:5000/product/update/' + props.formData._id, formData)
+      if (formData) {
+        await axios.post('http://localhost:5000/product/update/' + props.item._id, formData)
       } else {
         axios
           .post("http://localhost:5000/product/add", formData, {
@@ -113,7 +113,7 @@ export default function AddItem(props) {
           })
       }
     } catch (error) {
-      if (props.formData.nome) {
+      if (props.item._id) {
         alert('Erro ao editar item.')
       } else {
         alert('Erro ao adicionar item.')
@@ -126,11 +126,16 @@ export default function AddItem(props) {
 
   return (
     <div>
-      <div className="modal fade" id="addUserModal" tabIndex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+      <div>
+        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#addUserModalItem">
+          Add
+          </button>
+      </div>
+      <div className="modal fade" id="addUserModalItem" tabIndex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="addUserModalLabel">{props.formData.nome ? "Editar Produto" : "Novo Produto"}</h5>
+              <h5 className="modal-title" id="addUserModalLabel">Novo Produto</h5>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -186,7 +191,7 @@ export default function AddItem(props) {
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" className="btn btn-primary" data-dismiss="modal">{props.formData.nome ? "Editar" : "Adicionar"}</button>
+                  <button type="submit" className="btn btn-primary" data-dismiss="modal">Adicionar</button>
                 </div>
               </form>
             </div>

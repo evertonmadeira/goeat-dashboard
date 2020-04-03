@@ -11,24 +11,26 @@ export const Container = styled.div`
   justify-content: center;
 `;
 
+export const Content = styled.div`
+  width: 100%;
+  padding: 150px;
+  background: #f0f0f5;
+  box-shadow: 0 0 100px rgba(0, 0,0, 0.1);
+  border-radius: 8px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 export const Section = styled.section`
   width: 100%;
-  max-width: 350px;
-  margin-right: 30px;
+  max-width: 430px;
 `;
 
 export const Form = styled.form`
-  margin-top: 80px;
-`;
-
-export const Input = styled.input`
   width: 100%;
-  height: 60px;
-  color: #333;
-  border: 1px solid #dcdce6;
-  border-radius: 8px;
-  padding: 0 24px;
-  margin: 5px;
+  max-width: 450px;
 `;
 
 export const Button = styled.button`
@@ -52,17 +54,13 @@ export const Button = styled.button`
   }
 `;
 
-export const A = styled.a`
-  display: flex;
-  align-items: center;
-  margin-top: 15px;
+export const Input = styled.input`
+  margin-top: 8px;
+  width: 100%;
+  height: 60px;
+  color: #333;
+  border: 1px solid #dcdce6;
+  border-radius: 8px;
+  padding: 0 24px;
   margin: 5px;
-  color: #41414d;
-  font-size: 18px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: opacity 0.2s;
-  :hover{
-    opacity: 0.8;
-  }
-`
+`;

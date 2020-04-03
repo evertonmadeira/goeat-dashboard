@@ -2,11 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
-export default function AddTable(props) {
-
-  const [num, setNum] = useState('');
-  const [estado, setEstado] = useState('');
-  const [qrcode, setQrCode] = useState('');
+export default function ModalTable(props) {
 
   const history = useHistory();
 
@@ -32,6 +28,7 @@ export default function AddTable(props) {
 
       }
 
+      history.go('/table');
     } catch (error) {
 
       if (props.table.num) {
@@ -41,17 +38,17 @@ export default function AddTable(props) {
     }
 
     props.setSelectedTable({});
-    history.go('/table');
+
   }
 
   return (
     <div>
       <div>
-        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#addUserModalTable">
           Add
           </button>
       </div>
-      <div className="modal fade" id="addUserModal" tabIndex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+      <div className="modal fade" id="addUserModalTable" tabIndex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
         <form onSubmit={onSubmit}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
