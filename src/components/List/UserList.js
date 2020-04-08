@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ModalUser from "../Modal/ModalUser";
+import React, { useEffect, useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
+import ModalUser from "../Modal/ModalUser";
 import Navbar from "../Navbar";
 
 export default function UserList(props) {
@@ -23,7 +23,7 @@ export default function UserList(props) {
       console.log(res.data);
     });
 
-    setUser(user.filter((element) => element._id != id));
+    setUser(user.filter((element) => element._id !== id));
   }
 
   function userRow(user) {
@@ -54,14 +54,14 @@ export default function UserList(props) {
   return (
     <>
       <Navbar />
-      <div>
+      <div className="container">
         <div className="container row">
           <h3 style={{ marginRight: 5 }}>Usuários</h3>
           <ModalUser />
         </div>
 
         <table className="table">
-          <thead className="thead-light">
+          <thead className="thead-dark">
             <tr>
               <th>Nome</th>
               <th>Sobrenome</th>

@@ -77,14 +77,14 @@ export default function ItemList(props) {
   return (
     <>
       <Navbar />
-      <div>
+      <div className="container">
         <div className="container row">
           <h3 style={{ marginRight: 5 }}>Produtos</h3>
           <ModalItem />
         </div>
 
         <table className="table">
-          <thead className="thead-light">
+          <thead className="thead-dark">
             <tr>
               <th>Imagem</th>
               <th>Nome</th>

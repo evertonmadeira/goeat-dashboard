@@ -7,24 +7,24 @@ import TableList from "./components/List/TableList";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Principal from "./components/Principal";
-import './index.css'
+import "./index.css";
 
 function App() {
   return (
     <React.Fragment>
       <Router>
         <React.Fragment>
-            <Switch>
-              <Route path="/" exact component={Principal} />
-              <Route path="/user" component={UserList} />
-              <Route path="/item" component={ItemList} />
-              <Route path="/table" component={TableList} />
-              <Route path="/login" component={Login} />
-              <Route path="/register" component={Register} />
-            </Switch >
-        </React.Fragment >
-      </Router >
-    </React.Fragment >
+          <Switch>
+            <Route path="/" exact component={Principal} />
+            <Route path="/user" component={UserList} />
+            <Route path="/item" component={ItemList} />
+            <Route path="/table" component={TableList} />
+            <Route path="/login" component={Login} />
+            <Route path="/register" component={Register} />
+          </Switch>
+        </React.Fragment>
+      </Router>
+    </React.Fragment>
   );
 }
 

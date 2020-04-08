@@ -1,31 +1,41 @@
-import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { Container, Section, Form, Input, Button } from "./styles";
-import { FaSignInAlt } from "react-icons/fa";
-import logoImg from "../../assets/dashboard.png";
-import restImg from "../../assets/restaurant.jpg";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { FaSignInAlt, FaRProject } from "react-icons/fa";
+import { Link, useHistory } from "react-router-dom";
+import logoImg from "../../assets/dashboard.png";
+import { Button, Container, Form, Input, Section } from "./styles";
 
-export default function Login() {
+export default function Login(props) {
+  const [name] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [password, setPassword] = useState("");
   const history = useHistory();
 
   async function handleLogin(e) {
+    e.preventDefault();
+
     const admin = {
-      adminEmail: e.target.elements["adminEmail"].value,
-      password: e.target.elements["password"].value,
+      name,
+      adminEmail,
+      password,
     };
+
     try {
       const response = await axios.post(
         "http://localhost:5000/admin/authenticate",
-        { admin }
+        admin
       );
-      
-      localStorage.setItem("adminEmail", admin.adminEmail);
-      localStorage.setItem("adminName", admin.name);
-      history.push('/')
+      localStorage.setItem("adminEmail", response.data.admin.adminEmail);
+      localStorage.setItem("adminName", response.data.admin.name);
+
+      if (response.status === 200) {
+        history.push("/");
+      }
     } catch (error) {
+      console.log(error);
       alert("Falha no login, tente novamente.");
     }
+    
   }
   return (
     <Container>
@@ -35,8 +45,17 @@ export default function Login() {
           <h4 style={{ marginBottom: "27px", size: "32px", margin: "5px" }}>
             Faça seu login
           </h4>
-          <Input placeholder="Usuário" name="adminEmail" />
-          <Input type="password" placeholder="Senha" name="password" />
+          <Input
+            placeholder="Usuário"
+            value={adminEmail}
+            onChange={(e) => setAdminEmail(e.target.value)}
+          />
+          <Input
+            type="password"
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <Button type="submit">Entrar</Button>
         </Form>
         <Link

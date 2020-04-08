@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { FaTrashAlt } from "react-icons/fa";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import ModalTable from "../Modal/ModalTable";
-import { FaEdit } from "react-icons/fa";
 import Navbar from "../Navbar";
-
 import useQrCode from "../QRCode";
+
 
 export default function TableList() {
   const [table, setTable] = useState([]);
@@ -104,13 +103,16 @@ export default function TableList() {
   return (
     <>
       <Navbar />
-      <div>
+      <div className="container">
         <div className="container row">
           <h3 style={{ marginRight: 5 }}>Mesas</h3>
-          <ModalTable table={selectedTable} setSelectedTable={setSelectedTable} />
+          <ModalTable
+            table={selectedTable}
+            setSelectedTable={setSelectedTable}
+          />
         </div>
         <table className="table">
-          <thead className="thead-light">
+          <thead className="thead-dark">
             <tr>
               <th>Número</th>
               <th>Estado</th>

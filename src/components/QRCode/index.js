@@ -1,19 +1,17 @@
-const { useState, useEffect } = require("react");
+const { useState } = require("react");
 const QrCode = require("qrcode");
 
 const useQrCode = () => {
-  const [qrCode, setQrCode] = useState(null);
+  const [qrCode] = useState(null);
 
-  const getQrCode = async args => {
+  const getQrCode = async (args) => {
     try {
-      const qrCode = await QrCode.toDataURL(args)  
+      const qrCode = await QrCode.toDataURL(args);
       return qrCode;
-
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    
-  }
+  };
 
   return { getQrCode, qrCode };
 };
