@@ -20,3 +20,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.qr-class {
+  width: 50px !important;
+  height: 50px !important;
+}

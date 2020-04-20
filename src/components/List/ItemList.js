@@ -8,7 +8,7 @@ export default function ItemList(props) {
   const [item, setItem] = useState([]);
   const [setSelectedItem] = useState({});
 
-  useEffect(() => {
+  function getItem() {
     axios
       .get("http://localhost:5000/product/")
       .then((res) => {
@@ -17,6 +17,10 @@ export default function ItemList(props) {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  useEffect(() => {
+    getItem()
   }, []);
 
   function deleteItem(id) {
@@ -34,7 +38,8 @@ export default function ItemList(props) {
           <img
             src={"https://mernbucket.s3.amazonaws.com/" + item.img.key}
             alt={item.img.nome}
-            width="50px"
+            width="70px"
+            style={{borderRadius:'5px'}}
           ></img>
         </td>
         <td>{item.nome}</td>
@@ -80,7 +85,7 @@ export default function ItemList(props) {
       <div className="container">
         <div className="container row">
           <h3 style={{ marginRight: 5 }}>Produtos</h3>
-          <ModalItem />
+          <ModalItem get={getItem}/>
         </div>
 
         <table className="table">

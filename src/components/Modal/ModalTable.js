@@ -15,7 +15,7 @@ export default function ModalTable(props) {
     const table = {
       num: e.target.elements["num"].value,
       estado: e.target.elements["estado"].value,
-      qrcode: e.target.elements["qrcode"].value,
+      // qrcode: e.target.elements["qrcode"].value,
     };
 
     try {
@@ -110,7 +110,7 @@ export default function ModalTable(props) {
                     </option>
                   </select>
                 </div>
-                <div className="form-group">
+                {/* <div className="form-group">
                   <label>QR Code: </label>
                   <input
                     type="text"
@@ -118,7 +118,7 @@ export default function ModalTable(props) {
                     defaultValue={props.table.qrcode ? props.table.qrcode : ""}
                     className="form-control"
                   />
-                </div>
+                </div> */}
               </div>
               <div className="modal-footer">
                 <button

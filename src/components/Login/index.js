@@ -27,9 +27,9 @@ export default function Login(props) {
       );
       localStorage.setItem("adminEmail", response.data.admin.adminEmail);
       localStorage.setItem("adminName", response.data.admin.name);
-
+      localStorage.setItem("token", response.data.admin.token)
       if (response.status === 200) {
-        history.push("/");
+        history.push("/main");
       }
     } catch (error) {
       console.log(error);

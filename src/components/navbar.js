@@ -5,11 +5,11 @@ import { FaSignOutAlt } from "react-icons/fa";
 import Footer from "../components/Footer";
 
 export default function Navbar() {
-  const admin = localStorage.removeItem("adminEmail");
-
+  
+  
   function logout() {
     // remove admin from local storage to log admin out
-    localStorage.removeItem(admin);
+    localStorage.removeItem('token');
   }
 
   return (
@@ -18,7 +18,7 @@ export default function Navbar() {
         className="navbar navbar-expand-lg navbar-dark bg-dark"
         style={{ marginBottom: 50 }}
       >
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand" to="/main">
           <FaWhmcs style={{ marginRight: 5 }} />
           Admin
         </Link>
@@ -54,7 +54,7 @@ export default function Navbar() {
             <li className="nav-item">
               <Link
                 className="nav-link"
-                to="/login"
+                to="/"
                 onClick={logout}
                 style={{ marginLeft: 905 }}
               >

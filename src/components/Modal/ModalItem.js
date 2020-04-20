@@ -7,35 +7,34 @@ import { uniqueId } from "lodash";
 import filesize from "filesize";
 
 export default function ModalItem(props) {
-  const [nome, setNome] = useState("");
-  const [descricao] = useState("");
-  const [categoria] = useState("");
-  const [preco] = useState("");
+  // const [nome, setNome] = useState("");
+  // const [descricao] = useState("");
+  // const [categoria] = useState("");
+  // const [preco] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const history = useHistory();
 
+  // useEffect(() => {
+  //   if (props.item) console.log(props.item);
+  // }, [props.item]);
+
+  // const getFile = async () => {
+  //   const response = await axios.get("/product");
+
+  //   setUploadedFiles(
+  //     response.data.map((file) => ({
+  //       id: file._id,
+  //       name: file.name,
+  //       readableSize: filesize(file.size),
+  //       preview: file.url,
+  //       uploaded: true,
+  //       url: file.url,
+  //     }))
+  //   );
+  // };
+
   useEffect(() => {
-    if (props.item) console.log(props.item);
-  }, [props.item]);
-
-  const getFile = async () => {
-    const response = await axios.get("product");
-
-    setUploadedFiles(
-      response.data.map((file) => ({
-        id: file._id,
-        name: file.name,
-        readableSize: filesize(file.size),
-        preview: file.url,
-        uploaded: true,
-        url: file.url,
-      }))
-    );
-  };
-
-  useEffect(() => {
-    getFile();
 
     return function Unmount() {
       uploadedFiles.forEach((file) => URL.revokeObjectURL(file.preview));
@@ -76,52 +75,44 @@ export default function ModalItem(props) {
 
   async function onSubmit(e) {
     e.preventDefault();
-
-    const item = {
-      nome: e.target.elements["nome"].value,
-      descricao: e.target.elements["descricao"].value,
-      categoria: e.target.elements["categoria"].value,
-      preco: e.target.elements["preco"].value,
-      img: e.target.elements["img"].value,
-      file: e.target.elements["file"].value[uploadedFiles[0].file],
-    };
-
-    const formData = new FormData();
-
-    formData.append("nome", item.nome);
-    formData.append("descricao", item.descricao);
-    formData.append("categoria", item.categoria);
-    formData.append("preco", item.preco);
-    formData.append("img", item.img);
-    formData.append("file", item.file, uploadedFiles[0].name);
-
     try {
-      if (formData) {
-        await axios.post(
-          "http://localhost:5000/product/update/" + props.item._id,
-          formData
-        );
-      } else {
-        axios.post("http://localhost:5000/product/add", formData, {
-          onUploadProgress: (e) => {
-            const progress = parseInt(Math.round((e.loaded * 100) / e.total));
+      const item = {
+        nome: e.target.elements["nome"].value,
+        descricao: e.target.elements["descricao"].value,
+        categoria: e.target.elements["categoria"].value,
+        preco: e.target.elements["preco"].value,
+        file: uploadedFiles[0].file,
+      };
+      
+      const formData = new FormData();
+  
+      formData.append("nome", item.nome);
+      formData.append("descricao", item.descricao);
+      formData.append("categoria", item.categoria);
+      formData.append("preco", item.preco);
+      formData.append("file", item.file, uploadedFiles[0].name);
+  
+      await axios.post("http://localhost:5000/product/add", formData, {
+        onUploadProgress: (e) => {
+          const progress = parseInt(Math.round((e.loaded * 100) / e.total));
+  
+          updateFile(uploadedFiles[0].id, {
+            progress,
+          });
+        },
+      });
 
-            updateFile(uploadedFiles[0].id, {
-              progress,
-            });
-          },
-        });
-      }
+      const button = document.getElementById('button1')
+      const attr = document.createAttribute('data-dismiss')
+      
+      attr.value = 'modal'
+      button.setAttributeNode(attr)
+      button.click()
+
+      props.get()
     } catch (error) {
-      if (props.item._id) {
-        alert("Erro ao editar item.");
-      } else {
-        alert("Erro ao adicionar item.");
-      }
+      console.log('Deu erro no modalitem', error)      
     }
-
-    props.setSelectedItem({});
-    history.go("item");
   }
 
   return (
@@ -168,8 +159,6 @@ export default function ModalItem(props) {
                     name="nome"
                     required
                     className="form-control"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
                   />
                 </div>
                 <div className="form-group">
@@ -179,8 +168,6 @@ export default function ModalItem(props) {
                     name="descricao"
                     required
                     className="form-control rows=3"
-                    value={descricao}
-                    onChange={(e) => setNome(e.target.value)}
                   />
                 </div>
 
@@ -191,8 +178,6 @@ export default function ModalItem(props) {
                     name="categoria"
                     required
                     className="form-control"
-                    value={categoria}
-                    onChange={(e) => setNome(e.target.value)}
                   />
                 </div>
                 <div className="form-group">
@@ -202,8 +187,6 @@ export default function ModalItem(props) {
                     name="preco"
                     required
                     className="form-control"
-                    value={preco}
-                    onChange={(e) => setNome(e.target.value)}
                   />
                 </div>
                 <div>
@@ -219,9 +202,9 @@ export default function ModalItem(props) {
                     Close
                   </button>
                   <button
+                  id='button1'
                     type="submit"
                     className="btn btn-primary"
-                    data-dismiss="modal"
                   >
                     Adicionar
                   </button>

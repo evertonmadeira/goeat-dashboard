@@ -28,7 +28,7 @@ export default function Register() {
       );
 
       console.log(response.data.admin);
-      history.push("login");
+      history.push("/");
     } catch (error) {
       console.log(error);
       alert("Erro ao cadastrar usuário");
@@ -44,7 +44,7 @@ export default function Register() {
           </h1>
           <p>Cadastre-se na plataforma para gerir a aplicação.</p>
           <Link
-            to="/login"
+            to="/"
             style={{
               display: "flex",
               alignItems: "center",

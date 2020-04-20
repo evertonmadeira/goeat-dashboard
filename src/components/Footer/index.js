@@ -4,11 +4,8 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <div
-      className="row justify-content-center card-footer text-muted bg-dark"
-
-    >
-      <text>© 2020 Copyright - Madeira Corporation</text>
+    <div className="row justify-content-center card-footer text-muted bg-dark">
+      © 2020 Copyright - Madeira Corporation
     </div>
   );
 }

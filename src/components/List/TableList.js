@@ -1,36 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaPrint } from "react-icons/fa";
 import ModalTable from "../Modal/ModalTable";
 import Navbar from "../Navbar";
-import useQrCode from "../QRCode";
-
+import QRCode from "qrcode.react";
 
 export default function TableList() {
   const [table, setTable] = useState([]);
   const [selectedTable, setSelectedTable] = useState({});
-  const { getQrCode } = useQrCode();
 
-  const getDataImage = (dataArray) => {
-    return new Promise((resolve, reject) => {
-      try {
-        const data = [];
-        dataArray.forEach(async (table) => {
-          const img = await getQrCode(table);
-          data.push({
-            ...table,
-            img,
-          });
-        });
-        resolve(data);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
   const getData = async () => {
     const res = await axios.get("http://localhost:5000/table/");
-    const data = await getDataImage(res.data);
+    // const data = await getDataImage(res.data);
     //Depois que setei res.data renderizou as mesas
     setTable(res.data);
     console.log(res.data);
@@ -40,11 +21,14 @@ export default function TableList() {
     getData();
   }, []);
 
-  const downloadQR = (id) => {
-    const canvas = document.getElementById(id);
-    let downloadLink = document.createElement("qr");
-    // downloadLink.href = pngUrl;
-    downloadLink.download = table.num + ".png";
+  const downloadQR = (num) => {
+    const canvas = document.getElementById("1234");
+    const pngUrl = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    let downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = `mesa${num}.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -65,8 +49,16 @@ export default function TableList() {
         <td>{table.estado}</td>
         <td>
           <div className="row">
-            <img id={table._id} src={table.img} alt="qr" width="50px" />
-            <button onClick={() => downloadQR(table._id)}>Imprimir</button>
+            {/* <img id={table._id} src={getQrCode} alt="qr" width="50px" /> */}
+            <QRCode id="1234" value={table._id} size={300} className='qr-class' />
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={() => downloadQR(table.num)}
+              style={{ marginLeft: "5px" }}
+            >
+              <FaPrint size={20} />
+            </button>
           </div>
         </td>
         <td>
