@@ -13,8 +13,7 @@ export default function TableList() {
     const res = await axios.get("http://localhost:5000/table/");
     // const data = await getDataImage(res.data);
     //Depois que setei res.data renderizou as mesas
-    setTable(res.data);
-    console.log(res.data);
+    setTable(res.data[0]);
   };
 
   useEffect(() => {
@@ -22,7 +21,7 @@ export default function TableList() {
   }, []);
 
   const downloadQR = (num) => {
-    const canvas = document.getElementById("1234");
+    const canvas = document.getElementById(num);
     const pngUrl = canvas
       .toDataURL("image/png")
       .replace("image/png", "image/octet-stream");
@@ -50,7 +49,13 @@ export default function TableList() {
         <td>
           <div className="row">
             {/* <img id={table._id} src={getQrCode} alt="qr" width="50px" /> */}
-            <QRCode id="1234" value={table._id} size={300} className='qr-class' />
+            <QRCode
+              id={table.num}
+              value={table._id}
+              size={300}
+              className='qr-class'
+              includeMargin={true}
+            />
             <button
               type="button"
               className="btn btn-success"
@@ -84,7 +89,7 @@ export default function TableList() {
             </button>
           </div>
         </td>
-      </tr>
+      </tr >
     );
   }
 

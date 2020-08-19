@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { Container, Content, Section, Form, Button, Input } from "./styles";
-import logoImg from "../../assets/dashboard.png";
+import logoImg from "../../assets/GoEats..svg";
 import { FaArrowLeft } from "react-icons/fa";
 import axios from "axios";
 
@@ -38,7 +38,7 @@ export default function Register() {
     <Container>
       <Content>
         <Section>
-          <img src={logoImg} alt="dashboard" />
+          <img src={logoImg} alt="logo" />
           <h1 style={{ margin: "64px 0 32px", fontSize: "32px" }}>
             Faça seu cadastro
           </h1>

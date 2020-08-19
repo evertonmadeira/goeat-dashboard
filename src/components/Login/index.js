@@ -2,8 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaSignInAlt, FaRProject } from "react-icons/fa";
 import { Link, useHistory } from "react-router-dom";
-import logoImg from "../../assets/dashboard.png";
-import { Button, Container, Form, Input, Section } from "./styles";
+import logoImg from "../../assets/GoEats..svg";
+import { Button, Container, Form, Input, Section, Logo } from "./styles";
 
 export default function Login(props) {
   const [name] = useState("");
@@ -35,12 +35,12 @@ export default function Login(props) {
       console.log(error);
       alert("Falha no login, tente novamente.");
     }
-    
+
   }
   return (
     <Container>
       <Section>
-        <img src={logoImg} alt="dashboard" width="200px" />
+        <img src={logoImg} alt="logo" width="200px" />
         <Form onSubmit={handleLogin}>
           <h4 style={{ marginBottom: "27px", size: "32px", margin: "5px" }}>
             Faça seu login

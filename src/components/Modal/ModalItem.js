@@ -83,19 +83,19 @@ export default function ModalItem(props) {
         preco: e.target.elements["preco"].value,
         file: uploadedFiles[0].file,
       };
-      
+
       const formData = new FormData();
-  
+
       formData.append("nome", item.nome);
       formData.append("descricao", item.descricao);
       formData.append("categoria", item.categoria);
       formData.append("preco", item.preco);
       formData.append("file", item.file, uploadedFiles[0].name);
-  
+
       await axios.post("http://localhost:5000/product/add", formData, {
         onUploadProgress: (e) => {
           const progress = parseInt(Math.round((e.loaded * 100) / e.total));
-  
+
           updateFile(uploadedFiles[0].id, {
             progress,
           });
@@ -104,14 +104,14 @@ export default function ModalItem(props) {
 
       const button = document.getElementById('button1')
       const attr = document.createAttribute('data-dismiss')
-      
+
       attr.value = 'modal'
       button.setAttributeNode(attr)
       button.click()
 
       props.get()
     } catch (error) {
-      console.log('Deu erro no modalitem', error)      
+      console.log('Deu erro no modalitem', error)
     }
   }
 
@@ -173,12 +173,24 @@ export default function ModalItem(props) {
 
                 <div className="form-group">
                   <label>Categoria: </label>
-                  <input
+                  {/* <input
                     type="text"
                     name="categoria"
                     required
                     className="form-control"
-                  />
+                  /> */}
+                  <select name="categoria" className="custom-select">
+                    <option value="">Selecione um estado</option>
+                    <option value="Bebidas">Bebidas</option>
+                    <option value="Carnes">Carnes</option>
+                    <option value="Frutos do Mar">Frutos do Mar</option>
+                    <option value="Hambúrgueres">Hambúrgueres</option>
+                    <option value="Massas">Massas</option>
+                    <option value="Pizzas">Pizzas</option>
+                    <option value="Saladas">Saladas</option>
+                    <option value="Sobremesas">Sobremesas</option>
+                    <option value="Outros">Outros</option>
+                  </select>
                 </div>
                 <div className="form-group">
                   <label>Preço: </label>
@@ -202,7 +214,7 @@ export default function ModalItem(props) {
                     Close
                   </button>
                   <button
-                  id='button1'
+                    id='button1'
                     type="submit"
                     className="btn btn-primary"
                   >

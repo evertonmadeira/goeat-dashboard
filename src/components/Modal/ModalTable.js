@@ -15,7 +15,6 @@ export default function ModalTable(props) {
     const table = {
       num: e.target.elements["num"].value,
       estado: e.target.elements["estado"].value,
-      // qrcode: e.target.elements["qrcode"].value,
     };
 
     try {
@@ -36,6 +35,7 @@ export default function ModalTable(props) {
     }
 
     props.setSelectedTable({});
+    history.go('/table');
   }
 
   return (
@@ -70,6 +70,7 @@ export default function ModalTable(props) {
                   className="close"
                   data-dismiss="modal"
                   aria-label="Close"
+                  onClick={() => props.setSelectedTable({})}
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>

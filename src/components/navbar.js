@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
 import Footer from "../components/Footer";
 
-export default function Navbar() {
-  
-  
+const Navbar = () => {
+  const email = localStorage.getItem("adminEmail");
+
+
   function logout() {
     // remove admin from local storage to log admin out
     localStorage.removeItem('token');
@@ -16,7 +17,7 @@ export default function Navbar() {
     <>
       <nav
         className="navbar navbar-expand-lg navbar-dark bg-dark"
-        style={{ marginBottom: 50 }}
+        style={{ marginBottom: 32 }}
       >
         <Link className="navbar-brand" to="/main">
           <FaWhmcs style={{ marginRight: 5 }} />
@@ -56,7 +57,7 @@ export default function Navbar() {
                 className="nav-link"
                 to="/"
                 onClick={logout}
-                style={{ marginLeft: 905 }}
+                style={{ position: 'absolute', right: 16 }}
               >
                 <FaSignOutAlt size={20} />
               </Link>
@@ -64,12 +65,11 @@ export default function Navbar() {
           </ul>
         </div>
       </nav>
-      <div className="fixed-bottom">
-        <Footer />
-      </div>
     </>
   );
 }
+
+export default Navbar;
 
 //  <div className="container">
 //           <nav className="col-md-2 d-none d-md-block bg-light sidebar">

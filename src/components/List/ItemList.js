@@ -3,6 +3,8 @@ import axios from "axios";
 import ModalItem from "../Modal/ModalItem";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import Navbar from "../Navbar";
+import './styles.css';
+import formatValue from '../../utils/formatValue'
 
 export default function ItemList(props) {
   const [item, setItem] = useState([]);
@@ -12,7 +14,7 @@ export default function ItemList(props) {
     axios
       .get("http://localhost:5000/product/")
       .then((res) => {
-        setItem(res.data);
+        setItem(res.data[0]);
       })
       .catch((error) => {
         console.log(error);
@@ -39,13 +41,13 @@ export default function ItemList(props) {
             src={"https://mernbucket.s3.amazonaws.com/" + item.img.key}
             alt={item.img.nome}
             width="70px"
-            style={{borderRadius:'5px'}}
+            style={{ borderRadius: '5px' }}
           ></img>
         </td>
         <td>{item.nome}</td>
         <td>{item.descricao}</td>
         <td>{item.categoria}</td>
-        <td>R${item.preco}</td>
+        <td>{formatValue(item.preco)}</td>
         <td>
           <div className="row">
             <div>
@@ -85,7 +87,7 @@ export default function ItemList(props) {
       <div className="container">
         <div className="container row">
           <h3 style={{ marginRight: 5 }}>Produtos</h3>
-          <ModalItem get={getItem}/>
+          <ModalItem get={getItem} />
         </div>
 
         <table className="table">

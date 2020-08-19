@@ -11,7 +11,7 @@ export default function UserList(props) {
     axios
       .get("http://localhost:5000/user/")
       .then((res) => {
-        setUser(res.data);
+        setUser(res.data[0]);
       })
       .catch((err) => {
         console.log(err);
