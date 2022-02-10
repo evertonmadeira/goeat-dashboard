@@ -13,7 +13,7 @@
     "filesize": "^6.1.0",
     "history": "^4.10.1",
     "jquery": "^3.4.1",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "qrcode.react": "^1.0.0",
     "react": "^16.12.0",
     "react-circular-progressbar": "^2.0.3",
